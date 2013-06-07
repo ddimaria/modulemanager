@@ -1,5 +1,16 @@
 <?php namespace Levare\Modules;
 
+/**
+ * Diese Klasse startet den ModuleManager
+ * 
+ * @package Levare/Modules
+ * @author Florian Uhlrich <f.uhlrich@levare-cms.de>
+ * @copyright Copyright (c) 2013 by Levare Project Team
+ * @license BSD-3-Clause
+ * @version 1.1.0
+ * @access public
+ */
+
 use Illuminate\Support\ServiceProvider;
 
 class ModulesServiceProvider extends ServiceProvider {

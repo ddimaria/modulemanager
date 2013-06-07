@@ -1,6 +1,18 @@
 <?php 
 
 /**
+ * Diese Datei stellt Helfer bereit welche benötigt werden
+ * 
+ * @package Levare/Modules
+ * @author Florian Uhlrich <f.uhlrich@levare-cms.de>
+ * @copyright Copyright (c) 2013 by Levare Project Team
+ * @license BSD-3-Clause
+ * @version 1.1.0
+ * @access public
+ */
+
+
+/**
  * Gibt den Pfad zum Modules Ordner zurück
  * 
  * @return string

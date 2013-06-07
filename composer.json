@@ -1,6 +1,9 @@
 {
     "name": "levare/modules",
-    "description": "",
+    "description": "A Module Manager for Laravel 4",
+    "keywords": ["laravel", "module", "modulemanager"],
+    "homepage": "https://github.com/LevareCMS/modulemanager",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Florian Uhlrich",
