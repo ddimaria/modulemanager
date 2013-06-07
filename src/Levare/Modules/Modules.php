@@ -166,6 +166,7 @@ class Modules {
 	{
 		foreach($this->modules as $name => $path)
 		{
+			$name = strtolower($name);
 			App::make('view')->addNamespace($name, $path.'/views');
 			App::make('config')->addNamespace($name, $path.'/config');
 			App::make('translator')->addNamespace($name, $path.'/lang');
