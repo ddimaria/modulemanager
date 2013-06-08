@@ -17,11 +17,19 @@ Now, the package is designed to
 
 The namespace represents the folder and file renaming. In other words, if you have the following namespace:
 
-`namespace Modules\Dashboard\Controller\Admin\Start`
+`namespace Modules\Dashboard\Controller\Admin`
 
-then the path and the file must also be written as:
+then the path to folder must also be written as:
 
-`root/levare/Modules/Dashboard/Controllers/Admin/Start.php`
+`root/levare/Modules/Dashboard/Controller/Admin`
+
+for files the same:
+
+`use Modules\Dashboard\Controller\Admin\Start`
+
+and the path to file:
+
+`root/levare/Modules/Dashboard/Controller/Admin/Start.php`
 
 
 ##### Please read the installation part ####
