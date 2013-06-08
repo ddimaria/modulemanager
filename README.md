@@ -112,8 +112,8 @@ Run `composer dump-autoload` to register the new Namespace.
 
 ## How use
 
-There is a simple way to use this Package. Create a new folder named `modules` in your root directory. That's it!
-Now you can create a module in a simple way. Add a new Folder to `modules` and request your Site. The Module Manager does everything else for you. It create all needed files and register the Module.
+There is a simple way to use this Package. Create a new folder named `levare` in your root directory and in `levare` a folder named `Modules`. That's it!
+Now you can create a module in a simple way. Add a new Folder to `Modules` and request your Site. The Module Manager does everything else for you. It create all needed files and register the Module.
 
 You can now add specific Folders like `Controllers`, `Models`, `views`, and so on.
 
