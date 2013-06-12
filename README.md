@@ -97,7 +97,7 @@ Modules also ships with a facade which help you to manage your Modules. You can 
 ```
 
 Last bot not least. Add the Namespace to your `composer.json` file. Search on this file the `autoload` key.
-
+If you use a custom module folder location change levare/ to app/ (in case your modules folder location is: app/Modules)
 ```
 "autoload": {
 	// Other Stuff for Autoload
@@ -110,7 +110,7 @@ Last bot not least. Add the Namespace to your `composer.json` file. Search on th
 ``` 
 Run `composer dump-autoload` to register the new Namespace.
 
-## How use
+## How to use
 There is a simple way to use this Package. Create a new folder named `levare` in your root directory and in `levare` a folder named `Modules`. That's it!
 
 To use a custom module folder location:
