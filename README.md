@@ -97,7 +97,7 @@ Modules also ships with a facade which help you to manage your Modules. You can 
 ```
 
 Last bot not least. Add the Namespace to your `composer.json` file. Search on this file the `autoload` key.
-
+If you use a custom module folder location change levare/ to app/ (in case your modules folder location is: app/Modules)
 ```
 "autoload": {
 	// Other Stuff for Autoload
@@ -110,9 +110,24 @@ Last bot not least. Add the Namespace to your `composer.json` file. Search on th
 ``` 
 Run `composer dump-autoload` to register the new Namespace.
 
-## How use
-
+## How to use
 There is a simple way to use this Package. Create a new folder named `levare` in your root directory and in `levare` a folder named `Modules`. That's it!
+
+To use a custom module folder location:
+```
+php artisan config:publish levare/Modules
+```
+Then in: app/config/packages/levare/config.pphp
+```
+<?php
+return array(
+
+    'module_folder_location' => 'your-location-here', //example app/modules, levare/modules
+
+);
+
+```
+
 Now you can create a module in a simple way. Add a new Folder to `Modules` and request your Site. The Module Manager does everything else for you. It create all needed files and register the Module.
 
 You can now add specific Folders like `Controllers`, `Models`, `views`, and so on.

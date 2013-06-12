@@ -21,6 +21,8 @@ if(!function_exists('module_path'))
 {
 	function module_path()
 	{
-		return str_finish(app()->make('path.base'), '/') . 'levare/Modules';
+		$moduleFolder = Config::get('modules::module_folder_location');
+		
+		return str_finish(app()->make('path.base'), '/') . $moduleFolder;
 	}
 }
