@@ -13,15 +13,23 @@
 
 use App;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Config\Repository;
 
 class Modules {
 
 	/**
-	 * Enthält die Filesysten Instanz
+	 * Enthält die Filesystem Instanz
 	 * 
 	 * @var Illuminate\Filesystem\Filesystem
 	 */
 	public $files;
+
+	/**
+	 * Enthält die Config Instanz
+	 * 
+	 * @var Illuminate\Config\Repository
+	 */
+	public $config;
 
 	/**
 	 * Enthält alle Module
@@ -34,17 +42,35 @@ class Modules {
 	 * Erstellt eine neue Instanz der Modules Klasse
 	 * 
 	 * @param Illuminate\Filesystem\Filesystem $files
+	 * @param Illuminate\Config\Repository $config
 	 * @return void
 	 */
-	public function __construct(Filesystem $files)
+	public function __construct(Filesystem $files, Repository $config)
 	{
 		$this->files = $files;
+		$this->config = $config;
 
+		// Prüft ob der gesetzte Modules Ordner existiert
+		if(!$this->checkModulePath()) return false;
+		
 		// Verarbeitet alle Module und pass das Array an
 		$this->parse();
-
+		
 		// Prüft ob alle benötigten Dateien im Module vorhanden sind
 		$this->checkModules();
+
+	}
+
+	/**
+	 * Prüft ob der Module Pfad existiert
+	 * 
+	 * @return boolean
+	 */
+	private function checkModulePath()
+	{
+		$path = str_finish(base_path(), '/').$this->config->get('modules::module_folder_location');
+		$error = '<b>ModuleManager - Error</b>: ' . $path . ' does not exists';
+		return (is_readable($path)) ? true : die($error);
 	}
 
 	/**

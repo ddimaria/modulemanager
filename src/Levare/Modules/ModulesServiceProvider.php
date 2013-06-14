@@ -45,7 +45,7 @@ class ModulesServiceProvider extends ServiceProvider {
 	{
 		$this->app['modules'] = $this->app->share(function($app)
 		{
-			return new Modules($app['files']);
+			return new Modules($app['files'], $app['config'], $app['view']);
 		});
 	}
 

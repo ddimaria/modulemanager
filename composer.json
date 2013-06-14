@@ -19,8 +19,7 @@
             "src/Levare/Modules/helpers.php"
         ],
         "psr-0": {
-            "Levare\\Modules": "src/",
-            "Modules": "levare"
+            "Levare\\Modules": "src/"
         }
     },
     "minimum-stability": "dev"
