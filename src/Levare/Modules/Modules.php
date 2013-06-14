@@ -72,8 +72,7 @@ class Modules {
 		foreach($modules as $module)
 		{
 			//Remove module_path from module name
-			$modulePath = str_replace('/', '\\', module_path());
-			$moduleName = str_replace($modulePath . '\\', '', last(explode('/', $module)));
+			$moduleName = last(explode('/', str_replace('\\', '/', $module)));
 			
 			$this->modules[$moduleName] = $module;
 		}
