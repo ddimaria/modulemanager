@@ -69,8 +69,7 @@ class Modules {
 	private function checkModulePath()
 	{
 		$path = str_finish(base_path(), '/').$this->config->get('modules::module_folder_location');
-		$error = '<b>ModuleManager - Error</b>: ' . $path . ' does not exists';
-		return (is_readable($path)) ? true : die($error);
+		return (is_readable($path)) ? true : false;
 	}
 
 	/**
