@@ -73,7 +73,7 @@ The automatic folder registration make this method deprecated.
 To get the latest Version of Modules simply require it in your `composer.json` file.
 
 ```
-"levare\modules": "1.1.*"
+"levare/modules": "dev-master"
 ```
 
 After that, you'll need to run `composer install` to download the latest Version and updating the autoloader.
@@ -152,4 +152,4 @@ The Namespace for any Module is `Modules\ModuleNameE\FolderName`
 Check if your modules folder and all under it have, `chmod 775`!
 
 ## Forgot something?
-Write an email or create a issue.
+Write an email or create an issue.
