@@ -14,6 +14,7 @@
 use App;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Config\Repository;
+use Illuminate\Support\ClassLoader;
 
 class Modules {
 
@@ -83,6 +84,7 @@ class Modules {
 		foreach($modules as $module)
 		{
 			$this->loadRequiredFiles($module);
+			$this->registerGlobalNamespace($module);
 		}
 	}
 
@@ -189,10 +191,34 @@ class Modules {
 	 */
 	private function loadRequiredFiles($module)
 	{
-		foreach($this->getJSONFile($module)->autoload as $autoload)
+		if(isset($this->getJSONFile($module)->autoload))
 		{
-			include $this->modules[$module] . '/' . $autoload;
+			foreach($this->getJSONFile($module)->autoload as $autoload)
+			{
+				include $this->modules[$module] . '/' . $autoload;
+			}
 		}
+	}
+
+	/**
+	 * Registriert bei Bedarf Ordner am globalen Namespace
+	 * 
+	 * @param strig $module
+	 * @return void
+	 */
+	private function registerGlobalNamespace($module)
+	{
+		$directories = array();
+
+		if(isset($this->getJSONFile($module)->global))
+		{
+			foreach($this->getJSONFile($module)->global as $global)
+			{
+				$directories = $this->getPath($module).$global;
+			}
+		}
+
+		ClassLoader::addDirectories($directories);
 	}
 
 	/**

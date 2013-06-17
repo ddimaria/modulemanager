@@ -5,5 +5,8 @@
 	"description": "",
 	"autoload": [
 		"routes.php"
+	],
+	"global": [
+
 	]
 }
