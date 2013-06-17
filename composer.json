@@ -22,5 +22,13 @@
             "Levare\\Modules": "src/"
         }
     },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan config:publish levare/modules"
+        ],
+        "post-update-cmd": [
+            "php artisan config:publish levare/modules"
+        ]
+    },
     "minimum-stability": "dev"
 }
