@@ -3,6 +3,44 @@
 Modules is a module management for Laravel Version 4.
 
 ----------------
+## Changelog 1.1.3
+
+* added Global Namespace Loading
+
+You can add to your module.json an array: 
+
+```
+"global": [
+	
+]
+```
+
+Here you can load every folder you want from your module. e.g
+```
+"global": [
+	"Controller"
+]
+```
+
+The ModuleManager adds now the directory to the Laravel ClassLoader. You can now access all class from global namespace without adding any namespaces.
+
+##### Example
+
+````
+<php
+
+class StartController extends BaseController {
+
+	public function showWelcome()
+	{
+		return View::make('hello');
+	}
+
+}
+
+```
+
+-----------
 ## Changelog 1.1.0
 
 * rewritten package
