@@ -2,12 +2,17 @@
 
 /**
  * Diese Klasse bearbeitet alle Module relevanten Aufrufe
+ * 
+ * I want to thank these people for their outstanding amendments
+ * Edwin Luijten <https://github.com/Edwin-Luijten>
+ * Ryun S. <https://github.com/ryun>
+ * Steve <https://github.com/stevemo>
  *
  * @package Levare/Modules
  * @author Florian Uhlrich <f.uhlrich@levare-cms.de>
  * @copyright Copyright (c) 2013 by Levare Project Team
  * @license BSD-3-Clause
- * @version 1.1.0
+ * @version 1.1.4
  * @access public
  */
 
@@ -57,7 +62,7 @@ class Modules {
 		// Verarbeitet alle Module und pass das Array an
 		$this->parse();
 
-		// register all modules
+		// Registriert alle Module
 		$this->registerFolders();
 	}
 
@@ -159,7 +164,7 @@ class Modules {
             $content = $this->files->get($path.'module.json');
             return json_decode($content);
         }
-        catch ( \Illuminate\Filesystem\FileNotFoundException $e)
+        catch (\Illuminate\Filesystem\FileNotFoundException $e)
         {
             $this->createFile($module);
             return $this->getJSONFile($module);
@@ -167,11 +172,10 @@ class Modules {
 	}
 
     /**
-     * Create the module.json file
-     *
-     * @author Steve Montambeault
-     * @link   http://stevemo.ca
-     *
+     * Erstellt die module.json Datei
+     * 
+     * @param string $module
+     * @return void
      */
     private function createFile($module)
     {
@@ -187,7 +191,9 @@ class Modules {
     }
 
     /**
-     * Loop around the autoload key if exist and load the files
+     * Prüft ob der Autoload Bereich in der module.json existiert
+     * wenn ja, dann wird dieser durchlaufen und alle benötigten
+     * Dateien eingelesen
      *
      *
      * @param  string $files
@@ -206,7 +212,9 @@ class Modules {
     }
 
     /**
-     * Loop around the global key if exist and register the folder with the classloader
+     * Prüft ob der Global Bereich in der module.json existiert
+     * wenn ja, dann wird dieser durchlaufen und alle benötigten
+     * Ordner dem ClassLoader hinzugefügt.
      *
      *
      * @param  string $files
