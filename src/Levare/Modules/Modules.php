@@ -2,7 +2,7 @@
 
 /**
  * Diese Klasse bearbeitet alle Module relevanten Aufrufe
- * 
+ *
  * @package Levare/Modules
  * @author Florian Uhlrich <f.uhlrich@levare-cms.de>
  * @copyright Copyright (c) 2013 by Levare Project Team
@@ -20,28 +20,28 @@ class Modules {
 
 	/**
 	 * Enthält die Filesystem Instanz
-	 * 
+	 *
 	 * @var Illuminate\Filesystem\Filesystem
 	 */
 	public $files;
 
 	/**
 	 * Enthält die Config Instanz
-	 * 
+	 *
 	 * @var Illuminate\Config\Repository
 	 */
 	public $config;
 
 	/**
 	 * Enthält alle Module
-	 * 
+	 *
 	 * @var array
 	 */
 	public $modules = array();
 
 	/**
 	 * Erstellt eine neue Instanz der Modules Klasse
-	 * 
+	 *
 	 * @param Illuminate\Filesystem\Filesystem $files
 	 * @param Illuminate\Config\Repository $config
 	 * @return void
@@ -53,18 +53,17 @@ class Modules {
 
 		// Prüft ob der gesetzte Modules Ordner existiert
 		if(!$this->checkModulePath()) return false;
-		
+
 		// Verarbeitet alle Module und pass das Array an
 		$this->parse();
-		
-		// Prüft ob alle benötigten Dateien im Module vorhanden sind
-		$this->checkModules();
 
+		// register all modules
+		$this->registerFolders();
 	}
 
 	/**
 	 * Prüft ob der Module Pfad existiert
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private function checkModulePath()
@@ -75,22 +74,21 @@ class Modules {
 
 	/**
 	 * Laden aller benötigen Dateien aus den Module beim booten dieser Klasse
-	 * 
+	 *
 	 * @return void
 	 */
 	public function before()
 	{
-		$modules = array_keys($this->modules);
+        $modules = array_keys($this->modules);
 		foreach($modules as $module)
 		{
-			$this->loadRequiredFiles($module);
-			$this->registerGlobalNamespace($module);
+            $this->loadModuleFiles($module);
 		}
 	}
 
 	/**
 	 * Alle Module aus dem Modules Ordner verarbeiten und den Pfad abschneidem
-	 * 
+	 *
 	 * @return void
 	 */
 	private function parse()
@@ -100,14 +98,14 @@ class Modules {
 		{
 			//Remove module_path from module name
 			$moduleName = last(explode('/', str_replace('\\', '/', $module)));
-			
+
 			$this->modules[$moduleName] = $module;
 		}
 	}
 
 	/**
 	 * Listet alle Module mit dem absoluten Pfad auf
-	 * 
+	 *
 	 * @return array
 	 */
 	private function modules()
@@ -117,7 +115,7 @@ class Modules {
 
 	/**
 	 * Gibt einen spezifischen Module Pfad aus
-	 * 
+	 *
 	 * @param string $module;
 	 * @return string
 	 */
@@ -131,99 +129,107 @@ class Modules {
 		return null;
 	}
 
-	/**
-	 * Prüft ob alle benötigten Dateien im Module vorhanden sind.
-	 * Wenn nicht dann werden diese angelegt
-	 * 
-	 * @return void
-	 */
-	private function checkModules()
-	{
-		$out = '';
-		foreach($this->modules() as $module)
-		{
-			if($this->files->isWritable($module))
-			{
-				if(!$this->files->exists($path = $module.'/module.json'))
-				{
-					$this->files->copy(__DIR__.'/../templates/module.json', $module.'/module.json');
-				}
-
-				if(!$this->files->exists($path = $module.'/routes.php'))
-				{
-					$this->files->copy(__DIR__.'/../templates/routes.php', $module.'/routes.php');
-				}
-
-			}
-			else
-			{
-				$out .= "Please set writable permissions to " . $module . "\n";
-			}
-		}
-
-		if($out !== '')
-		{
-			return App::abort('403', $out);
-		}
-		else
-		{
-			$this->registerFolders();
-		}
-	}
+    /**
+     * Load the module.json file
+     * then register the required files
+     * and the global namespace
+     *
+     *
+     * @return void
+     */
+    private function loadModuleFiles($module)
+    {
+        $file = $this->getJSONFile($module);
+        $this->loadRequiredFiles($file, $module);
+        $this->registerGlobalNamespace($file, $module);
+    }
 
 	/**
-	 * Gibt die Module JSON Datein als Array aus
-	 * 
+	 * try to load the the module.json file.
+     * if it doesn't exist then try to create it.
+	 *
 	 * @return array
 	 */
 	public function getJSONFile($module)
 	{
-		$path = str_finish($this->modules[$module], '/');
-		$content = $this->files->get($path.'module.json');
-		return json_decode($content);
+        $path = str_finish($this->modules[$module], '/');
+
+        try
+        {
+            $content = $this->files->get($path.'module.json');
+            return json_decode($content);
+        }
+        catch ( \Illuminate\Filesystem\FileNotFoundException $e)
+        {
+            $this->createFile($module);
+            return $this->getJSONFile($module);
+        }
 	}
 
-	/**
-	 * Laden der Dateien aus dem Autoload Array
-	 * 
-	 * @param string $module
-	 * @return void
-	 */
-	private function loadRequiredFiles($module)
-	{
-		if(isset($this->getJSONFile($module)->autoload))
-		{
-			foreach($this->getJSONFile($module)->autoload as $autoload)
-			{
-				include $this->modules[$module] . '/' . $autoload;
-			}
-		}
-	}
+    /**
+     * Create the module.json file
+     *
+     * @author Steve Montambeault
+     * @link   http://stevemo.ca
+     *
+     */
+    private function createFile($module)
+    {
+        $module = $this->modules[$module];
+        if($this->files->isWritable($module))
+        {
+            $this->files->copy(__DIR__.'/../templates/module.json', $module.'/module.json');
+        }
+        else
+        {
+            return App::abort('403', "Please set writable permissions to " . $module . "\n");
+        }
+    }
 
-	/**
-	 * Registriert bei Bedarf Ordner am globalen Namespace
-	 * 
-	 * @param strig $module
-	 * @return void
-	 */
-	private function registerGlobalNamespace($module)
-	{
-		$directories = array();
+    /**
+     * Loop around the autoload key if exist and load the files
+     *
+     *
+     * @param  string $files
+     * @param  string $module
+     * @return void
+     */
+    private function loadRequiredFiles($files, $module)
+    {
+        if(property_exists($files, 'autoload'))
+        {
+            foreach ($files->autoload as $file)
+            {
+                include $this->modules[$module] . '/' . $file;
+            }
+        }
+    }
 
-		if(isset($this->getJSONFile($module)->global))
-		{
-			foreach($this->getJSONFile($module)->global as $global)
-			{
-				$directories = $this->getPath($module).$global;
-			}
-		}
+    /**
+     * Loop around the global key if exist and register the folder with the classloader
+     *
+     *
+     * @param  string $files
+     * @param  string $module
+     * @return void
+     */
+    private function registerGlobalNamespace($files, $module)
+    {
+        $directories = array();
 
-		ClassLoader::addDirectories($directories);
-	}
+        if(property_exists($files, 'global'))
+        {
+            foreach ($files->global as $global)
+            {
+                $directories = $this->getPath($module).$global;
+            }
+            ClassLoader::addDirectories($directories);
+        }
+    }
 
 	/**
 	 * Registrieren aller Ordner welche zu einem Namespace hinzugefügt werden können
-	 * 
+	 *
 	 * @return void
 	 */
 	private function registerFolders()
