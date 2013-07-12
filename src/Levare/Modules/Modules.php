@@ -59,7 +59,7 @@ class Modules {
 		// Prüft ob der gesetzte Modules Ordner existiert
 		if(!$this->checkModulePath()) return false;
 
-		// Verarbeitet alle Module und pass das Array an
+		// Verarbeitet alle Module und passt das Array an
 		$this->parse();
 
 		// Registriert alle Module
@@ -139,14 +139,13 @@ class Modules {
      * then register the required files
      * and the global namespace
      *
-     *
      * @return void
      */
     private function loadModuleFiles($module)
     {
         $file = $this->getJSONFile($module);
-        $this->loadRequiredFiles($file, $module);
         $this->registerGlobalNamespace($file, $module);
+        $this->loadRequiredFiles($file, $module);
     }
 
 	/**

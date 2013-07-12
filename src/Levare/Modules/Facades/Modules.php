@@ -7,7 +7,7 @@
  * @author Florian Uhlrich <f.uhlrich@levare-cms.de>
  * @copyright Copyright (c) 2013 by Levare Project Team
  * @license BSD-3-Clause
- * @version 1.1.0
+ * @version 1.1.4
  * @access public
  */
 
