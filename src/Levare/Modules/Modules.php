@@ -133,6 +133,16 @@ class Modules {
 
 		return null;
 	}
+	
+	/**
+	 * Get all registered modules.  Usage: modules::getModules()
+	 *
+	 * @return array
+	 */
+	public function getModules()
+	{
+        	return array_keys($this->modules);
+	}
 
     /**
      * Load the module.json file
