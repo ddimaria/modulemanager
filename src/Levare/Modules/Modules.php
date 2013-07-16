@@ -228,7 +228,7 @@ class Modules {
         {
             foreach ($files->global as $global)
             {
-                $directories = $this->getPath($module).$global;
+                $directories[] = $this->getPath($module).$global;
             }
             ClassLoader::addDirectories($directories);
         }
