@@ -47,6 +47,12 @@ class ModulesServiceProvider extends ServiceProvider {
 		{
 			return new Modules($app['files'], $app['config'], $app['view']);
 		});
+		
+		$this->app['command.modules.copy'] = $this->app->share(function($app)
+		{
+			return new Commands\CopyModulesCommand();
+		});
+		$this->commands('command.modules.copy');
 	}
 
 	/**
