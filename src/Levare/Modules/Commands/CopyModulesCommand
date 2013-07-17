@@ -42,7 +42,7 @@ class CopyModulesCommand extends Command {
 		$moduleOld = strtolower($this->argument('moduleOld'));
 		$moduleNew = strtolower($this->argument('moduleNew'));
 		$verbose = $this->option('verbose');
-		$seed = $this->option('verbose');
+		$seed = $this->option('seed');
 		
 		$pathOld = modules::getPath($moduleOld);
 		$pathNew = module_path() . '/' . $moduleNew;
