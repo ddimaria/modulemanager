@@ -8,8 +8,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class CopyModulesCommand extends Command {
 
-    /**
-   * The console command name.
+	/**
+	 * The console command name.
 	 *
 	 * @var string
 	 */
@@ -43,6 +43,8 @@ class CopyModulesCommand extends Command {
 		$moduleNew = strtolower($this->argument('moduleNew'));
 		$verbose = $this->option('verbose');
 		$seed = $this->option('seed');
+		$migration = $this->option('migration');
+		$dumpAutoload = $this->option('dump-autoload');
 		
 		$pathOld = modules::getPath($moduleOld);
 		$pathNew = module_path() . '/' . $moduleNew;
@@ -55,33 +57,48 @@ class CopyModulesCommand extends Command {
 		$app = \App::make('app');
 		$app['files']->copyDirectory($pathOld, $pathNew);
 		$files = $app['files']->allFiles($pathNew);
-		
+		$seedClass = ($seed != true) ? ucfirst($singularNew) . 'TableSeeder' : $seed;
+					
 		foreach ($files as $file) {
 			$filePath = $file->getRealPath();
 			$filePathNew = $this->replaceModuleName($filePath, $singularOld, $singularNew, $pluralOld, $pluralNew);
 			rename($filePath, $filePathNew);
 			$this->replaceModuleInFile($filePathNew, $singularOld, $singularNew, $pluralOld, $pluralNew);
-			
-			if ($verbose) {
-				$this->line($filePathNew);
-			}
+			$this->verbose('added file: ' . $filePathNew, $verbose);
 		}
 		
-		if ($seed) {
+		if (class_exists($seedClass)) {			
 			$app['modules']->modules += array($moduleNew => $pathNew);
 			$app['modules']->before();
-			
 			$artisan = new \Illuminate\Foundation\Artisan(\App::make('app'));
-			//$artisan->call('dump-autoload');
-			$seedClass = ($seed === true) ? ucfirst($singularNew) . 'TableSeeder' : $seed;
 			$artisan->call('db:seed', array('--class' => $seedClass));
-			
-			if ($verbose) {
-				$this->line($seedClass . ' seeded.');
-			}
+			$this->verbose('seeded class: ' . $seedClass, $verbose);
+		}
+		
+		if ($migration) {
+			$migrationFileName = 'create_' . $singularNew . '_table';
+			$artisan->call('migrate:make', array('name' => $migrationFileName, '--table' => $pluralNew, '--create' => null));
+			$this->verbose('migration file created: ' . $migrationFileName, $verbose);
+		}
+				
+		if ($dumpAutoload) {
+			$artisan->call('dump-autoload');
+			$this->verbose('dump-autoload has finished', $verbose);
 		}
 		
 		$this->line($moduleNew . ' successfully created.');
+	}
+
+	/**
+	 * Saves a couple of lines of code
+	 *
+	 * @return array
+	 */
+	protected function verbose($msg, $isVerbose = false)
+	{
+		if ($isVerbose) {
+			$this->line($msg);
+		}
 	}
 
 	/**
@@ -105,7 +122,9 @@ class CopyModulesCommand extends Command {
 	protected function getOptions()
 	{
 		return array(
-			array('seed', null, InputOption::VALUE_OPTIONAL, 'Seed the database: assign a name of the seed class to override the default class convention \'ModuleTableSeeder\'.', false),
+			array('seed', null, InputOption::VALUE_REQUIRED, 'Seed the database: assign a name of the seed class to override the default class convention \'ModuleTableSeeder\'.', false),
+			array('migration', null, InputOption::VALUE_OPTIONAL, 'Create a basic migration file.', false),
+			array('dump-autoload', null, InputOption::VALUE_OPTIONAL, 'Run artisan command: dump-autoload.', false),
 		);
 	}
 	
